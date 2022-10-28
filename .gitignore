@@ -1,6 +1,1 @@
-ereader/__pycache__
-ereader/utils/
-ereader/storage/
-ereader/venv/
-ereader/typesense-data/
-ereader/.DS_Store
+ereader/storage/**
