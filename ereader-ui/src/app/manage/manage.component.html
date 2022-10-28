@@ -1,78 +1,44 @@
 <div class="manage h-screen flex items-center justify-center">
-    <div class="fixed top-0 left-0">
-        <div class="p-4 bg-white rounded select-none">
-            <div class="cursor-pointer">
-                <a class="text-xs flex items-center" [routerLink]="['/']">
-                    <i class="pi pi-chevron-left" style="font-size: 0.5rem"></i>
-                    <span class="ml-1 underline">Courses</span>
-                </a>
-            </div>
-        </div>
-    </div>
-
     <div class="max-w-2xl mx-auto">
-        <div class="flex flex-col -mt-64">
-            <span class="text-2xl text-center">eReader: Manage Courses</span>
-            <p class="text-xs text-gray-500 text-center">
-                List of Available Courses
-            </p>
-            <div class="overflow-x-auto shadow-md sm:rounded-lg border mt-10">
+        <div class="flex flex-col">
+            <div class="overflow-x-auto shadow-md sm:rounded-lg border">
                 <div class="inline-block min-w-full align-middle">
                     <table class="min-w-full divide-y divide-gray-200 table-fixed">
                         <thead class="bg-gray-100">
                             <tr>
                                 <th scope="col"
                                     class="py-3 px-6 font-medium tracking-wider text-left text-gray-700 uppercase">
-                                    <div class="flex items-center">
+                                    <div class="flex">
                                         <div class="flex flex-col flex-grow">
-                                            Courses
+                                            <span>Course</span>
+                                            <span class="text-xs">Instructor</span>
                                         </div>
 
                                         <button pButton pRipple type="button" label="New Course"
-                                            class="p-button-sm p-button-outlined uppercase"
-                                            style="padding: 0.5rem 1rem;" routerLink="/manage/new">
+                                            class="p-button-sm p-button-outlined uppercase" style="padding: 0 1rem;"
+                                            routerLink="/manage/new">
                                         </button>
 
                                         <span class="p-input-icon-left ml-4">
                                             <i class="pi pi-search"></i>
                                             <input type="text" pInputText placeholder="Filter ..."
-                                                class="p-inputtext-sm search-input" [(ngModel)]="filter" />
+                                                class="p-inputtext-sm search-input" />
                                         </span>
                                     </div>
                                 </th>
                             </tr>
                         </thead>
-                        <tbody *ngIf="courses_filtered.length < 1; else coursesEl"
-                            class="bg-white divide-y divide-gray-200">
+                        <tbody class="bg-white divide-y divide-gray-200">
                             <tr class="hover:bg-gray-100">
-                                <td
-                                    class="py-4 px-6 font-medium text-xs text-gray-900 whitespace-nowrap cursor-pointer">
-                                    <div class="text-gray-400 text-center">
-                                        <ng-container *ngIf="filter">
-                                            No course found
-                                        </ng-container>
-                                        <ng-container *ngIf="!filter">
-                                            Use the <span class="font-bold">New Course</span> button to
-                                            <span class="font-bold">add a course</span>
-                                        </ng-container>
+                                <td class="py-4 px-6 font-medium text-gray-900 whitespace-nowrap cursor-pointer"
+                                    routerLink="/manage/infsci2140">
+                                    <div class="flex flex-col">
+                                        <span>INFSCI 2140</span>
+                                        <span class="text-xs">Prof. Dagin He</span>
                                     </div>
                                 </td>
                             </tr>
                         </tbody>
-                        <ng-template #coursesEl>
-                            <tbody class="bg-white divide-y divide-gray-200">
-                                <tr *ngFor="let course of courses_filtered" class="hover:bg-gray-100">
-                                    <td class="py-4 px-6 font-medium text-gray-900 whitespace-nowrap cursor-pointer"
-                                        [routerLink]="['/manage', course.id]">
-                                        <div class="flex flex-col">
-                                            <span class="text-xs">{{ course.id }}</span>
-                                            <span>{{ course.title }}</span>
-                                            <span class="text-xs">{{ course.teacher }}</span>
-                                        </div>
-                                    </td>
-                                </tr>
-                            </tbody>
-                        </ng-template>
                     </table>
                 </div>
             </div>

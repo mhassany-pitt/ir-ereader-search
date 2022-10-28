@@ -1,24 +1,18 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { HttpClientModule } from '@angular/common/http';
-import { FormsModule } from '@angular/forms';
 
 import { ReaderRoutingModule } from './reader.routing';
 import { ReaderComponent } from './reader.component';
-import { InputTextModule } from 'primeng/inputtext';
-import { AutoCompleteModule } from 'primeng/autocomplete';
+import { FormsModule } from '@angular/forms';
 
 @NgModule({
   declarations: [
-    ReaderComponent,
+    ReaderComponent
   ],
   imports: [
     CommonModule,
     FormsModule,
-    HttpClientModule,
-    ReaderRoutingModule,
-    InputTextModule,
-    AutoCompleteModule,
+    ReaderRoutingModule
   ]
 })
 export class ReaderModule { }
