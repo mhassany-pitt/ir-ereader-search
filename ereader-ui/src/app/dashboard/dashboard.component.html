@@ -29,12 +29,12 @@
                                 <td
                                     class="py-4 px-6 font-medium text-xs text-gray-900 whitespace-nowrap cursor-pointer">
                                     <div class="text-gray-400 text-center">
-                                        <ng-template *ngIf="filter">
+                                        <ng-container *ngIf="filter">
                                             No course found
-                                        </ng-template>
-                                        <ng-template *ngIf="!filter">
+                                        </ng-container>
+                                        <ng-container *ngIf="!filter">
                                             No course is defined yet or found
-                                        </ng-template>
+                                        </ng-container>
                                     </div>
                                 </td>
                             </tr>
