@@ -4,6 +4,7 @@ import { ActivatedRoute } from '@angular/router';
 import { environment } from 'src/environments/environment';
 import * as PDFObject from 'pdfobject';
 import { v4 as uuidv4 } from 'uuid';
+import { DomSanitizer } from '@angular/platform-browser';
 
 @Component({
   selector: 'app-reader',
@@ -18,6 +19,7 @@ export class ReaderComponent implements OnInit {
   constructor(
     private http: HttpClient,
     private route: ActivatedRoute,
+    private sanitizer: DomSanitizer,
   ) {
     if (this.id)
       this.load();
@@ -37,35 +39,39 @@ export class ReaderComponent implements OnInit {
 
           value.sections?.forEach((s: any) => {
             s.files?.forEach((f: any) => {
-              f.page_elids = [];
-              f.page_mediaboxes = {};
+              if (f.type == 'img') {
+                f.page_elids = ["ereader-p" + uuidv4()];
+                f.src = `${environment.apiUrl}/courses/${value.id}/${s.id}/${f.id}/img`;
+              } else if (f.type == 'html') {
+                f.page_elids = ["ereader-p" + uuidv4()];
+                f.src = this.sanitizer.bypassSecurityTrustResourceUrl(`${environment.apiUrl}/courses/${value.id}/${s.id}/${f.id}/html`);
+              } else if (f.type == 'pdf') {
+                f.page_elids = [];
+                f.page_mediaboxes = {};
 
-              const page_nums = []; // asc-sorted from 0
-              for (var i = 0, l = f.pages || 0; i < l; i++)
-                page_nums.push(i);
+                const page_nums = []; // asc-sorted from 0
+                for (let i = 0, l = f.pages || 0; i < l; i++)
+                  page_nums.push(i);
 
-              let last_mediabox: any = null;
-              page_nums.forEach((p: any) => {
-                if (p in f.mediabox)
-                  last_mediabox = f.mediabox[p];
+                let last_mediabox: any = null;
+                page_nums.forEach((p: any) => {
+                  if (p in f.mediabox)
+                    last_mediabox = f.mediabox[p];
 
-                const page_elid = "ereader-p" + uuidv4();
-                f.page_elids.push(page_elid);
-                f.page_mediaboxes[page_elid] = last_mediabox.split(',');
+                  const page_elid = "ereader-p" + uuidv4();
+                  f.page_elids.push(page_elid);
+                  f.page_mediaboxes[page_elid] = last_mediabox.split(',');
 
-                course_pages.push({
-                  url: `${environment.apiUrl}/courses/${value.id}/${s.id}/${f.id}/${p}#toolbar=0&navpanes=0&scrollbar=0`,
-                  elid: `#${page_elid}`
+                  const f_src = `${environment.apiUrl}/courses/${value.id}/${s.id}/${f.id}/${p}#toolbar=0&navpanes=0&scrollbar=0`;
+                  course_pages.push({ url: f_src, elid: `#${page_elid}` });
                 });
-              });
+              }
             });
           });
 
           this.course = value;
 
-          setTimeout(() => course_pages.forEach((p: any) => PDFObject.embed(p.url, p.elid, {
-            forcePDFJS: true
-          })), 0);
+          setTimeout(() => course_pages.forEach((p: any) => PDFObject.embed(p.url, p.elid)), 0);
         },
         error(err) {
           alert('oops!!! i could not load the data; my bad.');

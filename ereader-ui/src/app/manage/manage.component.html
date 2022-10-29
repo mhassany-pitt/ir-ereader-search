@@ -8,15 +8,14 @@
                             <tr>
                                 <th scope="col"
                                     class="py-3 px-6 font-medium tracking-wider text-left text-gray-700 uppercase">
-                                    <div class="flex">
+                                    <div class="flex items-center">
                                         <div class="flex flex-col flex-grow">
-                                            <span>Course</span>
-                                            <span class="text-xs">Instructor</span>
+                                            Courses
                                         </div>
 
                                         <button pButton pRipple type="button" label="New Course"
-                                            class="p-button-sm p-button-outlined uppercase" style="padding: 0 1rem;"
-                                            routerLink="/manage/new">
+                                            class="p-button-sm p-button-outlined uppercase"
+                                            style="padding: 0.5rem 1rem;" routerLink="/manage/new">
                                         </button>
 
                                         <span class="p-input-icon-left ml-4">
@@ -36,7 +35,7 @@
                                     <div class="text-gray-400 text-center">
                                         <ng-container *ngIf="filter">
                                             No course found
-                                         </ng-container>
+                                        </ng-container>
                                         <ng-container *ngIf="!filter">
                                             Use the <span class="font-bold">New Course</span> button to
                                             <span class="font-bold">add a course</span>

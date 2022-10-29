@@ -1,10 +1,11 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { HttpClientModule } from '@angular/common/http';
+import { FormsModule } from '@angular/forms';
 
 import { ReaderRoutingModule } from './reader.routing';
 import { ReaderComponent } from './reader.component';
-import { FormsModule } from '@angular/forms';
+import { InputTextModule } from 'primeng/inputtext';
 
 @NgModule({
   declarations: [
@@ -14,7 +15,8 @@ import { FormsModule } from '@angular/forms';
     CommonModule,
     FormsModule,
     HttpClientModule,
-    ReaderRoutingModule
+    ReaderRoutingModule,
+    InputTextModule,
   ]
 })
 export class ReaderModule { }

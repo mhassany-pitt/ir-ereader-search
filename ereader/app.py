@@ -1,8 +1,6 @@
 import os
 import shutil
 import json
-import traceback
-import subprocess
 from flask import Flask, request, abort, send_file
 from flask_cors import CORS
 from PyPDF2 import PdfFileReader, PdfFileWriter
@@ -57,14 +55,22 @@ def remove_course(id):
 
 
 @app.route('/api/courses/<course_id>/<section_id>/<file_id>/<page>', methods=['GET'])
-def get_course_pdf_page(course_id, section_id, file_id, page):
-    pdf_path = '{}/{}/{}/{}p{}.pdf'.format(
-        courses_dir, course_id, section_id, file_id, page)
+def get_course_resource(course_id, section_id, file_id, page):
+    path = '{}/{}/{}/{}'.format(courses_dir, course_id, section_id, file_id)
+    mimetype = None
 
-    if os.path.exists(pdf_path):
-        return send_file(pdf_path, mimetype='application/pdf')
+    if page == 'img':
+        mimetype = 'image/png'
+    elif page == 'html':
+        mimetype = 'text/html'
     else:
-        abort(404)
+        path = '{}p{}'.format(path, page)
+        mimetype = 'application/pdf'
+
+    if os.path.exists(path):
+        return send_file(path, mimetype)
+
+    abort(404)
 
 
 @app.route('/api/courses', methods=['PATCH'])
@@ -90,16 +96,18 @@ def post_course():
                 continue
 
             new_file = request.files[name]
-            ext = new_file.filename.split('.')[1]
-            target = '{}/{}.{}'.format(section_dir, file['id'], ext)
-
+            target = '{}/{}'.format(section_dir, file['id'])
             new_file.save(target)
 
-            if ext != 'pdf':
-                continue
-
-            file['mediabox'] = {}
-            file['pages'] = split_pdf(section_dir, file, target)
+            ext = new_file.filename.split('.')[1]
+            if ext == 'pdf':
+                file['type'] = 'pdf'
+                file['mediabox'] = {}
+                file['pages'] = split_pdf(section_dir, file, target)
+            elif ext == 'html':
+                file['type'] = 'html'
+            elif ext in ['png', 'jpg', 'jpeg']:
+                file['type'] = 'img'
 
     # store courses/[course-id].json
     with open('{}.json'.format(course_dir), 'w') as file:
@@ -120,7 +128,7 @@ def split_pdf(section_dir, file, target):
         writer = PdfFileWriter()
         writer.addPage(page)
 
-        with open(prefix + str(i) + '.pdf', 'wb') as pdf_page:
+        with open(prefix + str(i), 'wb') as pdf_page:
             writer.write(pdf_page)
 
         mediabox = ','.join([

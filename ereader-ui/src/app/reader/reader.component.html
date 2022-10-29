@@ -7,6 +7,16 @@
                 <div class="text-xs">{{ course.teacher }}</div>
             </div>
 
+            <span class="p-input-icon-left w-full mt-2">
+                <i class="pi pi-search"></i>
+                <input type="text" pInputText placeholder="Search ... [TODO]" class="p-inputtext-sm search-input w-full"
+                    style="padding: 0.4rem 1rem 0.4rem 2.5rem;" />
+            </span>
+
+            <div class="text-center mt-1 -mb-3 cursor-pointer" (click)="toc = !toc">
+                <i *ngIf="toc" class="pi pi-angle-up"></i>
+                <i *ngIf="!toc" class="pi pi-angle-down"></i>
+            </div>
 
             <ng-container *ngIf="toc">
                 <hr class="-mx-4 my-3" />
@@ -15,10 +25,13 @@
                     <span class="text-sm cursor-pointer font-bold" (click)="scrollTo(section.files[0]?.page_elids[0])">
                         {{ section.title }}
                     </span>
-                    <span *ngFor="let file of section.files" class="text-xs ml-3 cursor-pointer"
-                        (click)="scrollTo(file.page_elids[0])">
-                        {{ file.title }}
-                    </span>
+                    <div class="ml-3 flex flex-col">
+                        <span *ngFor="let file of section.files" class="text-xs cursor-pointer"
+                            [ngStyle]="{ 'margin-left': (file.depth / 2.0) + 'rem'}"
+                            (click)="scrollTo(file.page_elids[0])">
+                            {{ file.title }}
+                        </span>
+                    </div>
                 </div>
             </ng-container>
         </div>
@@ -28,8 +41,15 @@
     <ng-container *ngFor="let section of course?.sections">
         <ng-container *ngFor="let file of section.files">
             <div *ngFor="let page_elid of file.page_elids" [id]="page_elid"
-                class="page border shadow-lg mx-auto rounded my-10"
-                [ngStyle]="{ width: file.page_mediaboxes[page_elid][0] + 'pt', height: file.page_mediaboxes[page_elid][1] + 'pt' }">
+                class="page border shadow-lg mx-auto rounded my-10 w-fit h-fit" [ngStyle]="file.type == 'pdf' 
+                    ? { width: file.page_mediaboxes[page_elid][0] + 'pt', height: file.page_mediaboxes[page_elid][1] + 'pt' } 
+                    : (file.type == 'html' ? { width: '210mm', height: '297mm' } : {})">
+                <!-- if image -->
+                <img *ngIf="file.type == 'img'" [src]="file.src" class="m-8">
+                <!-- image html -->
+                <iframe *ngIf="file.type == 'html'" [src]="file.src" style="width: 100%; height: 100%;"
+                    scrolling="no"></iframe>
+                <!-- or pdf (set by js) -->
             </div>
         </ng-container>
     </ng-container>
