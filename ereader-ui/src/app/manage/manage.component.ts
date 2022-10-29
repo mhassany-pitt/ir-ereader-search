@@ -9,8 +9,8 @@ import { environment } from 'src/environments/environment';
 })
 export class ManageComponent implements OnInit {
 
-  pendingIndex = false;
   courses: any = [];
+  filter = '';
 
   constructor(
     private http: HttpClient
@@ -20,27 +20,17 @@ export class ManageComponent implements OnInit {
     this.load();
   }
 
-  load() {
-    this.http.get(`${environment.apiUrl}/index`, {}).subscribe({
-      next: (value: any) => this.pendingIndex = true,
-      error: (err) => this.pendingIndex = false,
-    });
+  get courses_filtered() {
+    return this.filter
+      ? this.courses.filter((c: any) => c.title.toLowerCase().indexOf(this.filter.toLowerCase()) > -1)
+      : this.courses;
+  }
 
+  load() {
     this.http.get(`${environment.apiUrl}/courses`).subscribe({
       next: (value: any) => this.courses = value,
       error(err) {
         alert('oops!!! i could not load the data; my bad.');
-
-        console.log(err);
-      }
-    });
-  }
-
-  indexUpdates() {
-    this.http.patch(`${environment.apiUrl}/index`, {}).subscribe({
-      next: (value: any) => alert('ok! done.'),
-      error(err) {
-        alert('oops!!! i could not index updates; my bad.');
 
         console.log(err);
       }

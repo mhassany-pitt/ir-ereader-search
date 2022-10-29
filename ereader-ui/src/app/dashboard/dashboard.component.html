@@ -17,26 +17,31 @@
                                         <span class="p-input-icon-left">
                                             <i class="pi pi-search"></i>
                                             <input type="text" pInputText placeholder="Filter ..."
-                                                class="p-inputtext-sm search-input" />
+                                                class="p-inputtext-sm search-input" [(ngModel)]="filter" />
                                         </span>
                                     </div>
                                 </th>
                             </tr>
                         </thead>
-                        <tbody *ngIf="courses.length < 1; else coursesEl"
+                        <tbody *ngIf="courses_filtered.length < 1; else coursesEl"
                             class="bg-white divide-y divide-gray-200">
                             <tr class="hover:bg-gray-100">
                                 <td
                                     class="py-4 px-6 font-medium text-xs text-gray-900 whitespace-nowrap cursor-pointer">
                                     <div class="text-gray-400 text-center">
-                                        No course is defined yet
+                                        <ng-template *ngIf="filter">
+                                            No course found
+                                        </ng-template>
+                                        <ng-template *ngIf="!filter">
+                                            No course is defined yet or found
+                                        </ng-template>
                                     </div>
                                 </td>
                             </tr>
                         </tbody>
                         <ng-template #coursesEl>
                             <tbody class="bg-white divide-y divide-gray-200">
-                                <tr *ngFor="let course of courses" class="hover:bg-gray-100">
+                                <tr *ngFor="let course of courses_filtered" class="hover:bg-gray-100">
                                     <td class="py-4 px-6 font-medium text-gray-900 whitespace-nowrap cursor-pointer"
                                         [routerLink]="['/reader', course.id]">
                                         <div class="flex flex-col">

@@ -10,6 +10,7 @@ import { environment } from 'src/environments/environment';
 export class DashboardComponent implements OnInit {
 
   courses: any = [];
+  filter = '';
 
   constructor(
     private http: HttpClient
@@ -17,6 +18,12 @@ export class DashboardComponent implements OnInit {
 
   ngOnInit(): void {
     this.load();
+  }
+
+  get courses_filtered() {
+    return this.filter
+      ? this.courses.filter((c: any) => c.title.toLowerCase().indexOf(this.filter.toLowerCase()) > -1)
+      : this.courses;
   }
 
   load() {

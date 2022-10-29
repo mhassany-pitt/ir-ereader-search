@@ -1,11 +1,36 @@
 <div class="pages container mx-auto py-10">
-    <div class="page border shadow-lg mx-auto rounded my-10">
-        page content
+    <div class="fixed top-0 left-0">
+        <div class="p-4 bg-yellow-50 shadow-md rounded select-none">
+            <div class="cursor-pointer" (click)="toc = !toc">
+                <div class="text-xs">{{ course.id }}</div>
+                <div class="font-bold">{{ course.title }}</div>
+                <div class="text-xs">{{ course.teacher }}</div>
+            </div>
+
+
+            <ng-container *ngIf="toc">
+                <hr class="-mx-4 my-3" />
+
+                <div *ngFor="let section of course?.sections" class="flex flex-col items-start justify-center">
+                    <span class="text-sm cursor-pointer font-bold" (click)="scrollTo(section.files[0]?.page_elids[0])">
+                        {{ section.title }}
+                    </span>
+                    <span *ngFor="let file of section.files" class="text-xs ml-3 cursor-pointer"
+                        (click)="scrollTo(file.page_elids[0])">
+                        {{ file.title }}
+                    </span>
+                </div>
+            </ng-container>
+        </div>
+
     </div>
-    <div class="page border shadow-lg mx-auto rounded my-10">
-        page content
-    </div>
-    <div class="page border shadow-lg mx-auto rounded my-10">
-        page content
-    </div>
+
+    <ng-container *ngFor="let section of course?.sections">
+        <ng-container *ngFor="let file of section.files">
+            <div *ngFor="let page_elid of file.page_elids" [id]="page_elid"
+                class="page border shadow-lg mx-auto rounded my-10"
+                [ngStyle]="{ width: file.page_mediaboxes[page_elid][0] + 'pt', height: file.page_mediaboxes[page_elid][1] + 'pt' }">
+            </div>
+        </ng-container>
+    </ng-container>
 </div>

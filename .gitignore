@@ -1,1 +1,3 @@
-ereader/storage/**
+ereader/utils/
+ereader/storage/
+ereader/venv/
