@@ -144,3 +144,10 @@ def split_pdf(section_dir, file, target):
     os.remove(target)
 
     return len(reader.pages)
+
+
+# -- pdftohtml conversion --
+# https://github.com/coolwanglu/pdf2htmlEX
+# https://github.com/coolwanglu/pdf2htmlEX/wiki/Download
+# Docker image - 1.23GB by Kim Lokøy kim.lokoy@gmail.com
+# docker run -ti --rm -v ~/Desktop:/pdf bwits/pdf2htmlex pdf2htmlEX --zoom 1.3 test.pdf

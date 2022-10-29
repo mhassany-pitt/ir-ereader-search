@@ -1,16 +1,19 @@
 <div class="pages container mx-auto py-10">
     <div class="fixed top-0 left-0">
-        <div class="p-4 bg-yellow-50 shadow-md rounded select-none">
+        <div class="p-4 bg-white shadow-md rounded select-none">
             <div class="cursor-pointer" (click)="toc = !toc">
-                <div class="text-xs">{{ course.id }}</div>
+                <a class="text-xs flex items-center" [routerLink]="['/']">
+                    <i class="pi pi-chevron-left" style="font-size: 0.5rem"></i>
+                    <span class="ml-1 underline">Back to Courses</span>
+                </a>
                 <div class="font-bold">{{ course.title }}</div>
-                <div class="text-xs">{{ course.teacher }}</div>
+                <div class="text-xs">{{ course.id }} - {{ course.teacher }}</div>
             </div>
 
             <span class="p-input-icon-left w-full mt-2">
                 <i class="pi pi-search"></i>
                 <input type="text" pInputText placeholder="Search ... [TODO]" class="p-inputtext-sm search-input w-full"
-                    style="padding: 0.4rem 1rem 0.4rem 2.5rem;" />
+                    style="padding: 0.25rem 1rem 0.25rem 2.5rem;" />
             </span>
 
             <div class="text-center mt-1 -mb-3 cursor-pointer" (click)="toc = !toc">
