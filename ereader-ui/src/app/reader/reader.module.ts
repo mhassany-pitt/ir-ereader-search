@@ -9,7 +9,7 @@ import { InputTextModule } from 'primeng/inputtext';
 
 @NgModule({
   declarations: [
-    ReaderComponent
+    ReaderComponent,
   ],
   imports: [
     CommonModule,

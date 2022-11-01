@@ -25,13 +25,12 @@
                 <hr class="-mx-4 my-3" />
 
                 <div *ngFor="let section of course?.sections" class="flex flex-col items-start justify-center">
-                    <span class="text-sm cursor-pointer font-bold" (click)="scrollTo(section.files[0]?.page_elids[0])">
+                    <span class="text-sm cursor-pointer font-bold" (click)="scrollTo(section.files[0]?.pages[0])">
                         {{ section.title }}
                     </span>
                     <div class="ml-3 flex flex-col">
                         <span *ngFor="let file of section.files" class="text-xs cursor-pointer"
-                            [ngStyle]="{ 'margin-left': (file.depth / 2.0) + 'rem'}"
-                            (click)="scrollTo(file.page_elids[0])">
+                            [ngStyle]="{ 'margin-left': (file.depth / 2.0) + 'rem'}" (click)="scrollTo(file.pages[0])">
                             {{ file.title }}
                         </span>
                     </div>
@@ -43,17 +42,12 @@
 
     <ng-container *ngFor="let section of course?.sections">
         <ng-container *ngFor="let file of section.files">
-            <div *ngFor="let page_elid of file.page_elids" [id]="page_elid"
-                class="page border shadow-lg mx-auto rounded my-10 w-fit h-fit" [ngStyle]="file.type == 'pdf' 
-                    ? { width: file.page_mediaboxes[page_elid][0] + 'pt', height: file.page_mediaboxes[page_elid][1] + 'pt' } 
-                    : (file.type == 'html' ? { width: '210mm', height: '297mm' } : {})">
-                <!-- if image -->
-                <img *ngIf="file.type == 'img'" [src]="file.src" class="m-8">
-                <!-- image html -->
-                <iframe *ngIf="file.type == 'html'" [src]="file.src" style="width: 100%; height: 100%;"
-                    scrolling="no"></iframe>
-                <!-- or pdf (set by js) -->
-            </div>
+            <iframe *ngFor="let page of file.pages" [src]="page.src_url" [id]="page.el_id" class="page mx-auto"
+                [ngStyle]="page.page_size  
+                    ? { width: page.page_size[0], height: page.page_size[1] } 
+                    : { width: 'inherit', height: '95vh', border: 'solid 1px' }"
+                [scrolling]="page.page_size ? 'no' : 'yes'" loading="lazy">
+            </iframe>
         </ng-container>
     </ng-container>
 </div>

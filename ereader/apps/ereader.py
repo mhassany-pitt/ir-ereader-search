@@ -1,20 +1,10 @@
 import os
 import shutil
-import typesense
 import json
 from flask import Blueprint, request, abort, render_template
 from apps.transform import process_html, process_image, process_pdf
 from apps.utils import courses_path, course_path, section_path, file_path
 
-client = typesense.Client({
-    'nodes': [{
-        'host': os.environ.get('TYPESENSE_HOST'),
-        'port': os.environ.get('TYPESENSE_PORT'),
-        'protocol': os.environ.get('TYPESENSE_PROTOCOL'),
-    }],
-    'api_key': os.environ.get('TYPESENSE_API_KEY'),
-    'connection_timeout_seconds': int(os.environ.get('TYPESENSE_CONNECTION_TIMEOUT_SECONDS'))
-})
 
 ereader = Blueprint('ereader', __name__, template_folder='templates')
 
@@ -90,7 +80,7 @@ def post_course():
     remove_orphan_files(course)
 
     # then store or update courses/[course-id].json
-    with open(course_path({'id': course['id'] + '.json'}, False), 'w') as course_json:
+    with open(course_path({'id': course['id'] + '.json'}, True), 'w') as course_json:
         json.dump(course, course_json)
 
     return {'status': 'ok'}
@@ -112,17 +102,11 @@ def save_file(course, section, file, uploaded_file):
 def remove_orphan_files(course):
     section_ids = [str(section['id']) for section in course['sections']]
     for section_id in os.listdir(course_path(course)):
-        p = section_path(course, {'id': section_id})
-
-        if section_id not in section_ids and os.path.isdir(p):
-            shutil.rmtree(p)
+        if section_id not in section_ids:
+            shutil.rmtree(section_path(course, {'id': section_id}))
 
     for section in course['sections']:
-        file_ids = [str(file['id']) for file in (
-            section['files'] if 'files' in section else [])]
-
-        p = section_path(course, section)
-        for file_id in (os.listdir(p) if os.path.isdir(p) else []):
+        file_ids = [str(file['id']) for file in section['files']]
+        for file_id in os.listdir(section_path(course, section)):
             if file_id.split('p')[0] not in file_ids or not file_id.endswith('.html'):
                 os.remove(file_path(course, section, {'id': file_id}))
-                client.collections['pages'].documents[file_id].delete()
