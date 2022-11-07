@@ -1,25 +1,30 @@
 <div class="pages container mx-auto py-10">
-    <div class="fixed top-0 left-0">
+    <div class="fixed top-0 left-0 right-0">
         <div class="p-4 bg-white shadow-md rounded select-none">
-            <div class="cursor-pointer" (click)="toc = !toc">
-                <a class="text-xs flex items-center" [routerLink]="['/']">
+            <div class="flex items-center">
+                <a class="text-xs flex items-center w-64" [routerLink]="['/']">
                     <i class="pi pi-chevron-left" style="font-size: 0.5rem"></i>
-                    <span class="ml-1 underline">Back to Courses</span>
+                    <span class="ml-1 underline">Courses</span>
                 </a>
-                <div class="font-bold">{{ course.title }}</div>
-                <div class="text-xs">{{ course.id }} - {{ course.teacher }}</div>
+
+                <span class="flex-grow"></span>
+
+                <div class="flex items-center cursor-pointer" (click)="toc = !toc">
+                    <i class="pi pi-list" style="font-size: 0.75rem"></i>
+                    <span class="text-sm font-bold ml-2">{{ course.title }}</span>
+                    <span class="text-xs ml-1">{{ course.id }} - {{ course.teacher }}</span>
+                </div>
+
+
+                <span class="flex-grow"></span>
+
+                <span class="p-input-icon-left w-64 -my-2">
+                    <i class="pi pi-search"></i>
+                    <input type="text" pInputText placeholder="Search ... [TODO]"
+                        class="p-inputtext-sm search-input w-full" style="padding: 0.25rem 1rem 0.25rem 2.5rem;" />
+                </span>
             </div>
 
-            <span class="p-input-icon-left w-full mt-2">
-                <i class="pi pi-search"></i>
-                <input type="text" pInputText placeholder="Search ... [TODO]" class="p-inputtext-sm search-input w-full"
-                    style="padding: 0.25rem 1rem 0.25rem 2.5rem;" />
-            </span>
-
-            <div class="text-center mt-1 -mb-3 cursor-pointer" (click)="toc = !toc">
-                <i *ngIf="toc" class="pi pi-angle-up"></i>
-                <i *ngIf="!toc" class="pi pi-angle-down"></i>
-            </div>
 
             <ng-container *ngIf="toc">
                 <hr class="-mx-4 my-3" />
@@ -40,14 +45,16 @@
 
     </div>
 
-    <ng-container *ngFor="let section of course?.sections">
-        <ng-container *ngFor="let file of section.files">
-            <iframe *ngFor="let page of file.pages" [src]="page.src_url" [id]="page.el_id" class="page mx-auto"
-                [ngStyle]="page.page_size  
-                    ? { width: page.page_size[0], height: page.page_size[1] } 
-                    : { width: 'inherit', height: '95vh', border: 'solid 1px' }"
-                [scrolling]="page.page_size ? 'no' : 'yes'" loading="lazy">
-            </iframe>
+    <div class="my-10 w-full">
+        <ng-container *ngFor="let section of course?.sections">
+            <ng-container *ngFor="let file of section.files">
+                <iframe *ngFor="let page of file.pages" [src]="page.src_url" [id]="page.el_id" class="page mx-auto"
+                    [ngStyle]="page.page_size  
+                        ? { width: page.page_size[0], height: page.page_size[1] } 
+                        : { width: 'inherit', height: '95vh', border: 'solid 1px' }"
+                    [scrolling]="page.page_size ? 'no' : 'yes'" loading="lazy">
+                </iframe>
+            </ng-container>
         </ng-container>
-    </ng-container>
+    </div>
 </div>

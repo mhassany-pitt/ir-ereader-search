@@ -69,5 +69,6 @@ export class ReaderComponent implements OnInit {
 
   scrollTo(page: { el_id: string }) {
     document.querySelector('#' + page.el_id)?.scrollIntoView({ behavior: 'smooth' });
+    this.toc = false;
   }
 }
