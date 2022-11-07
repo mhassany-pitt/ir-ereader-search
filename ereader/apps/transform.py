@@ -3,7 +3,7 @@ import pytesseract
 import subprocess
 from PyPDF2 import PdfFileReader, PdfFileWriter
 from apps.utils import section_path, file_path
-from apps.search import index_html
+from apps.search import index
 
 
 def process_pdf(course, section, file, src_pdf_file_path):
@@ -68,8 +68,9 @@ def pdf_2_html(course, section, file, pdf_path):
 
     subprocess.run([command], shell=True)
 
-    html_file_path = '{}.html'.format(pdf_path)
-    index_html(course, section, file, html_file_path)
+    with open('{}.html'.format(pdf_path), 'r') as html_file:
+        html_content = html_file.read()
+        index(course, section, file, html_content)
 
 
 def process_html(course, section, file, src_html_file_path):
@@ -77,4 +78,6 @@ def process_html(course, section, file, src_html_file_path):
     html_file_path = '{}p0.html'.format(src_html_file_path)
     os.rename(src_html_file_path, html_file_path)
 
-    index_html(course, section, file, html_file_path)
+    with open(html_file_path, 'r') as html_file:
+        html_content = html_file.read()
+        index(course, section, file, html_content)

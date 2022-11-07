@@ -4,7 +4,7 @@ from flask import Blueprint
 search = Blueprint('search', __name__, template_folder='templates')
 
 
-def index_html(course, section, file, html_file_path):
+def index(course, section, file, html_content):
     ''' index given html file '''
 
     # whenever a new page is added to a course, this function will be called.
