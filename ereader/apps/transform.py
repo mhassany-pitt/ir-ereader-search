@@ -15,21 +15,21 @@ def process_pdf(course, section, file, src_pdf_file_path):
 
     last_page_size = None
 
-    for i, pdf_page in enumerate(pdf_reader.pages):
+    for page_num, pdf_page in enumerate(pdf_reader.pages):
         pdf_writer = PdfFileWriter()
         pdf_writer.addPage(pdf_page)
 
         page_size = ','.join([str(pdf_page.mediabox.width),
                               str(pdf_page.mediabox.height)])
         if page_size != last_page_size:
-            file['page_size'][i] = page_size
+            file['page_size'][page_num] = page_size
             last_page_size = page_size
 
-        pdf_page_path = file_path(course, section, file, str(i))
+        pdf_page_path = file_path(course, section, file, str(page_num))
         with open(pdf_page_path, 'wb') as pdf_page_file:
             pdf_writer.write(pdf_page_file)
 
-        pdf_2_html(course, section, file, pdf_page_path)
+        pdf_2_html(course, section, file, 1 + page_num, pdf_page_path)
 
         os.remove(pdf_page_path)
 
@@ -55,7 +55,7 @@ def process_image(course, section, file, src_image_file_path):
     return 1
 
 
-def pdf_2_html(course, section, file, pdf_path):
+def pdf_2_html(course, section, file, page_num, pdf_path):
     ''' convert single page pdf to html '''
     # -- pdftohtml conversion --
     # https://github.com/coolwanglu/pdf2htmlEX
@@ -70,7 +70,7 @@ def pdf_2_html(course, section, file, pdf_path):
 
     with open('{}.html'.format(pdf_path), 'r') as html_file:
         html_content = html_file.read()
-        index(course, section, file, html_content)
+        index(course, section, file, page_num, html_content)
 
 
 def process_html(course, section, file, src_html_file_path):
@@ -80,4 +80,4 @@ def process_html(course, section, file, src_html_file_path):
 
     with open(html_file_path, 'r') as html_file:
         html_content = html_file.read()
-        index(course, section, file, html_content)
+        index(course, section, file, 1, html_content)

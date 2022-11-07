@@ -1,24 +1,26 @@
 import os
 import typesense
-from flask import Blueprint
+from flask import Blueprint, request, abort, render_template
 
 client = typesense.Client({
-    'nodes': [{'host': 'localhost', 'port': '8108', 'protocol': 'http'}],
+    'nodes': [{
+        'host': os.environ.get("TYPESENSE_HOST"),
+        'port': os.environ.get("TYPESENSE_PORT"),
+        'protocol': os.environ.get("TYPESENSE_PROTOCOL"),
+    }],
     'api_key': os.environ.get("TYPESENSE_API_KEY"),
-    'connection_timeout_seconds': 2
+    'connection_timeout_seconds': int(os.environ.get("TYPESENSE_CONNECTION_TIMEOUT_SECONDS"))
 })
 
 search = Blueprint('search', __name__, template_folder='templates')
 
 
-def index(course, section, file, html_content):
+def index(course, section, file, page_num, html_content):
     # https://typesense.org/docs/guide/building-a-search-application.html#build-a-search-application
-    ''' index given html file '''
+    ''' index given html content '''
 
     # whenever a new page is added to a course, this function will be called.
     # course, section, and file has the following format
-    # html_file_path needs to be indexed (it is a single html file - a pdf page, uploaded image/web-page)
-    # use typesense to index it.
 
     # ----> course, section, and file format
     # {
@@ -48,10 +50,11 @@ def index(course, section, file, html_content):
     return 0
 
 
-@search.route('/api/search', methods=['GET'])
-def query():
+@search.route('/api/search', methods=['POST'])
+def search():
     ''' perform search '''
+    query_text = request.values.get('qtext')
 
-    # later on we will use this function to query/search within the index
+    # ... search and return the results
 
     return []
