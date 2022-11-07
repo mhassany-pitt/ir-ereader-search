@@ -1,10 +1,18 @@
+import os
+import typesense
 from flask import Blueprint
 
+client = typesense.Client({
+    'nodes': [{'host': 'localhost', 'port': '8108', 'protocol': 'http'}],
+    'api_key': os.environ.get("TYPESENSE_API_KEY"),
+    'connection_timeout_seconds': 2
+})
 
 search = Blueprint('search', __name__, template_folder='templates')
 
 
 def index(course, section, file, html_content):
+    # https://typesense.org/docs/guide/building-a-search-application.html#build-a-search-application
     ''' index given html file '''
 
     # whenever a new page is added to a course, this function will be called.

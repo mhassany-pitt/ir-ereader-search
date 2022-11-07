@@ -1,12 +1,14 @@
+import os
+from os.path import join, dirname
 from apps.ereader import ereader
 from apps.search import search
 from flask import Flask
 from flask_cors import CORS
+from dotenv import load_dotenv
+
+load_dotenv(join(dirname(__file__), '.env'))
 
 app = Flask(__name__)
-
-app.config['storage-path'] = './storage'
-app.config['courses-path'] = '{}/courses'.format(app.config['storage-path'])
 
 CORS(app)
 

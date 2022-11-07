@@ -1,9 +1,8 @@
 import os
-from flask import current_app
 
 
 def courses_path():
-    return current_app.config['courses-path']
+    return os.environ.get("STORAGE_COURSES")
 
 
 def course_path(course, create=False):
