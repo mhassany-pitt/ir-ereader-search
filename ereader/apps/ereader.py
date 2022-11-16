@@ -102,11 +102,16 @@ def save_file(course, section, file, uploaded_file):
 def remove_orphan_files(course):
     section_ids = [str(section['id']) for section in course['sections']]
     for section_id in os.listdir(course_path(course)):
-        if section_id not in section_ids:
-            shutil.rmtree(section_path(course, {'id': section_id}))
+        p = section_path(course, {'id': section_id})
+
+        if section_id not in section_ids and os.path.isdir(p):
+            shutil.rmtree(p)
 
     for section in course['sections']:
-        file_ids = [str(file['id']) for file in section['files']]
-        for file_id in os.listdir(section_path(course, section)):
+        file_ids = [str(file['id']) for file in (
+            section['files'] if 'files' in section else [])]
+
+        p = section_path(course, section)
+        for file_id in (os.listdir(p) if os.path.isdir(p) else []):
             if file_id.split('p')[0] not in file_ids or not file_id.endswith('.html'):
                 os.remove(file_path(course, section, {'id': file_id}))
