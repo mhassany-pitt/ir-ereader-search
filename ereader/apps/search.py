@@ -51,7 +51,7 @@ def index(course, section, file, page_num, html_content):
 
 
 @search.route('/api/search', methods=['POST'])
-def search():
+def do_search():
     ''' perform search '''
     query_text = request.values.get('qtext')
 
