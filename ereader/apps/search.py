@@ -30,7 +30,7 @@ search = Blueprint('search', __name__, template_folder='templates')
 # function.
 
 schema =  {
-    "name": "pages", 
+    "name": "course_pages", 
     "fields": [
     {
     "name": "reference_information",
@@ -45,6 +45,7 @@ schema =  {
 
 # This creates the schema in typesense. 
 client.collections.create(schema)
+#client.collections['pages'].update(schema)
 
 def index(course, section, file, page_num, html_content):
     # This part of the indexing function parses the html.
@@ -123,7 +124,7 @@ def index(course, section, file, page_num, html_content):
     }
 
     # This is the command in type sense to add the document. 
-    client.collections['pages'].documents.upsert(document)
+    client.collections['course_pages'].documents.upsert(document)
     return 0
 
 
