@@ -44,6 +44,12 @@ schema =  {
 }
 
 # This creates the schema in typesense. 
+
+try:
+    client.collections['pages'].delete()
+except Exception as e:
+    pass
+
 client.collections.create(schema)
 #client.collections['pages'].update(schema)
 
