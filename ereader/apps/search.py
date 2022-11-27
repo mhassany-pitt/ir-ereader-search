@@ -44,8 +44,8 @@ schema =  {
 }
 
 # This creates the schema in typesense. 
-#client.collections.create(schema)
-client.collections['pages'].update(schema)
+client.collections.create(schema)
+#client.collections['pages'].update(schema)
 
 def index(course, section, file, page_num, html_content):
     # This part of the indexing function parses the html.
