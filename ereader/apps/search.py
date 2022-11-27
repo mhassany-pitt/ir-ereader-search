@@ -33,8 +33,12 @@ schema =  {
     "name": "pages", 
     "fields": [
     {
-    "ref": "reference_information",
-    "content": "content"
+    "name": "reference_information",
+    "type": "string"
+    },
+    {
+    "name": "content",
+    "type": "string"
     }
     ]
 }
