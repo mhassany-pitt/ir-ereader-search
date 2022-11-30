@@ -80,7 +80,7 @@ def post_course():
     remove_orphan_files(course)
 
     # then store or update courses/[course-id].json
-    with open(course_path({'id': course['id'] + '.json'}, False), 'w') as course_json:
+    with open(course_path({'id': course['id'] + '.json'}, True), 'w') as course_json:
         json.dump(course, course_json)
 
     return {'status': 'ok'}
