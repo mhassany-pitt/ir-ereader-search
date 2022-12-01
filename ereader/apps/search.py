@@ -141,6 +141,7 @@ def index(course, section, file, page_num, html_content):
 def do_search():
     ''' perform search '''
     query_text = request.values.get('qtext')
+    # query_text = "information"
 
     search_parameters = {
         'q': query_text,
@@ -151,6 +152,22 @@ def do_search():
 
     results = client.collections['pages'].documents.search(search_parameters)
 
+    # search_requests = {
+    #     'searches': [
+    #         {'collection': 'pages',
+    #         'q': query_text}
+    #     ]
+    # }
+
+    # common_search_params = {
+    #     'query_by': 'content'
+    # }
+
+    # results = client.multi_search.perform(search_requests, common_search_params)
+
+    print('results', results)
     # ... search and return the results
 
     return results
+
+

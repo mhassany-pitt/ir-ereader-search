@@ -12,8 +12,9 @@ const typesenseInstantsearchAdapter = new TypesenseInstantSearchAdapter({
     apiKey: "somevalue",
     nodes: [
       {
-        host: "127.0.0.1", //127.0.0.1:5000/api/search -> don't know how to route to this using typesense
-        port: 5000,
+        host: "localhost",
+        //path: "api/search", //127.0.0.1:5000/api/search -> don't know how to route to this using typesense
+        port: 8108,
         protocol: "http",
       }
     ]
@@ -31,6 +32,12 @@ const searchClient = typesenseInstantsearchAdapter.searchClient;
   styleUrls: ['./reader.component.less']
 })
 export class ReaderComponent implements OnInit {
+
+  //typescript config
+  config = {
+    indexName: 'pages',
+    searchClient,
+  };
 
   toc = false;
   course: any = {};
@@ -89,12 +96,6 @@ export class ReaderComponent implements OnInit {
       
 
   }
-
-  //typescript config
-  config = {
-    indexName: 'pages',
-    searchClient,
-  };
 
   scrollTo(page: { el_id: string }) {
     document.querySelector('#' + page.el_id)?.scrollIntoView({ behavior: 'smooth' });
