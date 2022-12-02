@@ -39,6 +39,10 @@ schema =  {
     {
     "name": "content",
     "type": "string"
+    }, 
+    {
+    "name": "sentences",
+    "type": "string[]"
     }
     ]
 }
@@ -119,6 +123,10 @@ def index(course, section, file, page_num, html_content):
 
     # This is the empty string that will be used to hold the content. 
     content_string = ''
+    
+    # This will hold a list of each sentence.  
+    # I split on '. ' the extra space after the "." should help identify sentences only.  
+    split_content = content_string.split('. ')
 
     # For each item in the list of content, that item is appended to 
     # the content_string that will be passed as content to the index. 
@@ -135,6 +143,7 @@ def index(course, section, file, page_num, html_content):
     document = {
         "reference_information": f"c{course}s{section}f{file}p{page_num}",
         "content": content_string
+        "sentences": split_content
     }
 
     # This is the command in type sense to add the document. 
