@@ -109,7 +109,8 @@ def index(course, section, file, page_num, html_content):
     for item in important_tags:
         # Catch parsing error
         if len(item) >= 7 and item[-7] == '-':
-            parser.feed(item)
+            catch_error = item.replace('-','')
+            parser.feed(catch_error)
         elif len(item) >= 7 and item[-7] != '-':
             catch_error = item + ' '
             parser.feed(catch_error)
