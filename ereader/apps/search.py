@@ -127,6 +127,22 @@ def index(course, section, file, page_num, html_content):
     # This will hold a list of each sentence.  
     # I split on '. ' the extra space after the "." should help identify sentences only.  
     split_content = content_string.split('. ')
+    
+    # Added functionality if we ever want to implement word specific data. 
+    # This holds each word in the entire page. 
+    no_ws = []
+    words = content_string.split(' ')
+    for word in words:
+        if len(word) != 0:
+            no_ws.append(word)
+        else:
+            pass
+        
+    # Added functionality if we ever want sentences that are split into each individual word. 
+    words_by_sentence = []
+    for sentence in split_content:
+        split_sentence = sentence.split(' ')
+        words_by_sentence.append(split_sentence)
 
     # For each item in the list of content, that item is appended to 
     # the content_string that will be passed as content to the index. 
