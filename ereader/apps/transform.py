@@ -29,7 +29,7 @@ def process_pdf(course, section, file, src_pdf_file_path):
         with open(pdf_page_path, 'wb') as pdf_page_file:
             pdf_writer.write(pdf_page_file)
 
-        pdf_2_html(course, section, file, 1 + page_num, pdf_page_path)
+        pdf_2_html(course, section, file, page_num, pdf_page_path)
 
         os.remove(pdf_page_path)
 
@@ -80,4 +80,4 @@ def process_html(course, section, file, src_html_file_path):
 
     with open(html_file_path, 'r') as html_file:
         html_content = html_file.read()
-        index(course, section, file, 1, html_content)
+        index(course, section, file, 0, html_content)

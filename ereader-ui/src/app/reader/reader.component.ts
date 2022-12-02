@@ -4,27 +4,6 @@ import { ActivatedRoute } from '@angular/router';
 import { environment } from 'src/environments/environment';
 import { v4 as uuidv4 } from 'uuid';
 import { DomSanitizer } from '@angular/platform-browser';
-import TypesenseInstantSearchAdapter from 'typesense-instantsearch-adapter';
-
-//adding the typescript search declaration
-const typesenseInstantsearchAdapter = new TypesenseInstantSearchAdapter({
-  server: {
-    apiKey: "somevalue",
-    nodes: [
-      {
-        host: "localhost",
-        //path: "api/search", //127.0.0.1:5000/api/search -> don't know how to route to this using typesense
-        port: 8108,
-        protocol: "http",
-      }
-    ]
-  },
-  additionalSearchParameters: {
-    query_by: "content"
-  }
-});
-
-const searchClient = typesenseInstantsearchAdapter.searchClient;
 
 @Component({
   selector: 'app-reader',
@@ -33,19 +12,23 @@ const searchClient = typesenseInstantsearchAdapter.searchClient;
 })
 export class ReaderComponent implements OnInit {
 
-  //typescript config
-  config = {
-    indexName: 'pages',
-    searchClient,
-  };
-
   toc = false;
   course: any = {};
+
+  _searchQuery: string = '';
+  set searchQuery(s: any) {
+    if ((typeof s) == 'string') { this._searchQuery = s; console.log(typeof s) }
+  }
+  get searchQuery() { return this._searchQuery; }
+  delayedSearch: any = null;
+  searchResults: any[] = [];
+  searchElIds: any = {};
+  highlight: any = {};
 
   constructor(
     private http: HttpClient,
     private route: ActivatedRoute,
-    private sanitizer: DomSanitizer,
+    public sanitizer: DomSanitizer,
   ) {
     if (this.id)
       this.load();
@@ -61,6 +44,8 @@ export class ReaderComponent implements OnInit {
     this.http.get(`${environment.apiUrl}/courses/${this.id}`)
       .subscribe({
         next: (value: any) => {
+          this.searchElIds = {};
+
           value.sections?.forEach((s: any) => {
             s.files?.forEach((f: any) => {
               const page_nums = []; // asc-sorted from 0
@@ -73,12 +58,14 @@ export class ReaderComponent implements OnInit {
                 if (f.page_size && p in f.page_size)
                   last_page_size = f.page_size[p];
 
+                const el_id = 'ereader-p' + uuidv4();
+                this.searchElIds[`s${s.id}f${f.id}p${p}`] = el_id;
+
                 f.pages.push({
-                  el_id: "ereader-p" + uuidv4(),
+                  el_id,
                   page_size: last_page_size?.split(',').map((e: string) => parseFloat(e) + 10 + 'pt'),
-                  src_url: this.sanitizer.bypassSecurityTrustResourceUrl(
-                    `${environment.apiUrl}/courses/${value.id}/${s.id}/${f.id}/${p}#toolbar=0&navpanes=0&scrollbar=0`
-                  )
+                  src_url:
+                    `${environment.apiUrl}/courses/${value.id}/${s.id}/${f.id}/${p}`
                 })
               });
             });
@@ -92,13 +79,45 @@ export class ReaderComponent implements OnInit {
           console.log(err);
         }
       });
-
-      
-
   }
 
-  scrollTo(page: { el_id: string }) {
-    document.querySelector('#' + page.el_id)?.scrollIntoView({ behavior: 'smooth' });
+  scrollTo(el_id: string) {
+    document.getElementById(el_id)?.scrollIntoView({ behavior: 'smooth' });
     this.toc = false;
+  }
+
+  search() {
+    if (this.delayedSearch)
+      clearInterval(this.delayedSearch)
+
+    this.delayedSearch = setTimeout(() =>
+      this.http.post(`${environment.apiUrl}/search`, {
+        query: this.searchQuery,
+        c_id: this.course.id
+      }).subscribe({
+        next: (resp: any) => {
+          this.searchResults = resp.hits;
+        },
+        error(err) {
+          alert('oops!!! i could not look that up; my bad.');
+
+          console.log(err);
+        }
+      }), 500);
+  }
+
+  searchSelected(result: any) {
+    setTimeout(() => {
+      const doc = result.document;
+      const sfp = `s${doc.s_id}f${doc.f_id}p${doc.p_num}`;
+
+      if (sfp in this.searchElIds) {
+        const elId = this.searchElIds[sfp];
+        this.highlight = { el_id: elId, param: '?highlight=' + encodeURIComponent(result.highlights[0].snippet) };
+        this.scrollTo(elId);
+      }
+
+      this.searchQuery = '';
+    }, 0);
   }
 }
