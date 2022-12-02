@@ -107,6 +107,13 @@ def index(course, section, file, page_num, html_content):
 
     # This function extracts the content from each of the tags. 
     for item in important_tags:
+        # Catch parsing error
+        if len(item) >= 7 and item[-7] == '-':
+            parser.feed(item)
+        elif len(item) >= 7 and item[-7] != '-':
+            catch_error = item + ' '
+            parser.feed(catch_error)
+        else:
             parser.feed(item)
 
     # This is the empty string that will be used to hold the content. 
