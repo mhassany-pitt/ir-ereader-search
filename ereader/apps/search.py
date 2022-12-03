@@ -29,33 +29,29 @@ search = Blueprint('search', __name__, template_folder='templates')
 # content, which needs to be passsed tot he result of the search 
 # function.
 
-schema =  {
-    "name": "pages", 
-    "fields": [
-    {
-    "name": "reference_information",
-    "type": "string"
-    },
-    {
-    "name": "content",
-    "type": "string"
-    }, 
-    {
-    "name": "sentences",
-    "type": "string[]"
-    }
+schema =  
+
+
+schema = {
+    'name': 'pages',
+    'fields': [
+        {'name': 'c_id', 'type': 'string'},
+        {'name': 's_id', 'type': 'int64'},
+        {'name': 'f_id', 'type': 'int64'},
+        {'name': 'p_num', 'type': 'int64'},
+        {'name': 'content', 'type': 'string'}, 
+        {"name": "sentences","type": "string[]"}
     ]
 }
 
-# This creates the schema in typesense. 
-
+# This creates the schema in typesense.
 try:
-    client.collections['pages'].delete()
+    # # -- uncomment to reset
+    # client.collections['pages'].delete()
+    client.collections.create(schema)
 except Exception as e:
     pass
-
-client.collections.create(schema)
-#client.collections['pages'].update(schema)
+# client.collections['pages'].update(schema)
 
 def index(course, section, file, page_num, html_content):
     # This part of the indexing function parses the html.
@@ -157,21 +153,24 @@ def index(course, section, file, page_num, html_content):
 
     # This is the document that will be added to the index. 
     document = {
-        "reference_information": f"c{course}s{section}f{file}p{page_num}",
-        "content": content_string
-        "sentences": split_content
+        'c_id': course['id'],
+        's_id': section['id'],
+        'f_id': file['id'],
+        'p_num': page_num,
+        'content': content_string
+        'sentences: split_content
     }
 
     # This is the command in type sense to add the document. 
     client.collections['pages'].documents.upsert(document)
-    return 0
 
 
 @search.route('/api/search', methods=['POST'])
 def do_search():
     ''' perform search '''
-    query_text = request.values.get('qtext')
-
-    # ... search and return the results
-
-    return []
+    return client.collections['pages'].documents.search({
+        'q': request.json['query'],
+        'query_by': 'content',
+        'filter_by': 'c_id:' + request.json['c_id'],
+        # 'sort_by': 'num_employees:desc'
+    })
