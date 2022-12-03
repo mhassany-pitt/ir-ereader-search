@@ -1,4 +1,17 @@
 {{ content | safe }}
 
-<link rel="stylesheet" type="text/css" href="{{ root_url }}static/ereader-page__style.css">
-</body>
+<link rel="stylesheet" type="text/css" href="{{ root_url }}static/ereader-page__style.css" />
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/mark.js/8.11.1/mark.min.js"></script>
+
+<script>
+  var url = new URL(document.location.href);
+  var highlight = url.searchParams.get('highlight');
+  if (highlight) {
+    highlight = decodeURIComponent(highlight);
+
+    var si = '<mark>'.length + highlight.indexOf('<mark>');
+    var se = highlight.indexOf('</mark>');
+    new Mark(document.querySelector("body")).mark(highlight.substring(si, se));
+  }
+</script>

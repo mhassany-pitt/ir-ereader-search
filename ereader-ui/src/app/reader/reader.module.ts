@@ -6,6 +6,7 @@ import { FormsModule } from '@angular/forms';
 import { ReaderRoutingModule } from './reader.routing';
 import { ReaderComponent } from './reader.component';
 import { InputTextModule } from 'primeng/inputtext';
+import { AutoCompleteModule } from 'primeng/autocomplete';
 
 @NgModule({
   declarations: [
@@ -17,6 +18,7 @@ import { InputTextModule } from 'primeng/inputtext';
     HttpClientModule,
     ReaderRoutingModule,
     InputTextModule,
+    AutoCompleteModule,
   ]
 })
 export class ReaderModule { }
