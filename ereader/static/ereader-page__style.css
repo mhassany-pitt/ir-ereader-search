@@ -1,0 +1,8 @@
+#sidebar {
+    display: none !important
+}
+
+#page-container {
+    background-color: transparent !important;
+    background-image: none !important;
+}

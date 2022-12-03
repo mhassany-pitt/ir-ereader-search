@@ -1,0 +1,140 @@
+<div class="course h-screen flex items-center justify-center">
+    <div class="fixed top-0 left-0">
+        <div class="p-4 bg-white rounded select-none">
+            <div class="cursor-pointer">
+                <a class="text-xs flex items-center" [routerLink]="['/manage']">
+                    <i class="pi pi-chevron-left" style="font-size: 0.5rem"></i>
+                    <span class="ml-1 underline">Management</span>
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <div class="max-w-2xl mx-auto">
+        <div class="flex flex-col -mt-24">
+            <span class="text-2xl text-center">eReader: Course</span>
+            <p class="text-xs text-gray-500 text-center">
+                Update Course Details
+            </p>
+            <div class="overflow-x-auto shadow-md sm:rounded-lg border mt-10">
+                <div class="inline-block min-w-full align-middle">
+                    <input #explorer type="file" class="hidden" accept="application/pdf,image/png,image/jpeg,text/html"
+                        (change)="fileSelected($event)" />
+
+                    <form #form="ngForm" (ngSubmit)="submit(form)" class="flex flex-col px-6 py-8">
+                        <div>
+                            <input type="text" pInputText placeholder="IDENTIFIER" size="20" name="id"
+                                [(ngModel)]="course.id" class="p-inputtext-sm text-sm" required />
+                        </div>
+
+                        <span class="my-1"></span>
+
+                        <input type="text" pInputText placeholder="TITLE" size="50" name="title"
+                            [(ngModel)]="course.title" class="p-inputtext-lg text-2xl font-bold" required />
+
+                        <span class="my-1"></span>
+
+                        <div>
+                            <input type="text" pInputText placeholder="TEACHER" size="40" name="teacher"
+                                [(ngModel)]="course.teacher" class="p-inputtext-sm text-sm" required />
+                        </div>
+
+                        <span class="my-2"></span>
+
+                        <div *ngIf="course.sections?.length < 1; else sectionsEl"
+                            class="text-gray-400 hover:text-green-500 text-center border hover:border-green-500 rounded py-2 cursor-pointer text-sm"
+                            (click)="addSection()">
+                            Click here to add a <span class="font-bold">Section</span>
+                        </div>
+                        <ng-template #sectionsEl>
+                            <div>
+                                <button pButton pRipple type="button" label="New Section"
+                                    class="p-button-success p-button-outlined p-button-sm uppercase"
+                                    style="padding: 0.25rem 0.75rem; font-size: 0.75rem;" (click)="addSection()">
+                                </button>
+                            </div>
+
+                            <span class="my-1"></span>
+
+                            <p-accordion [multiple]="false" [(activeIndex)]="activeSectionIndex">
+                                <p-accordionTab *ngFor="let section of course.sections; let i = index">
+                                    <ng-template pTemplate="header">
+                                        <div class="flex items-center w-full">
+                                            <span class="flex-grow">
+                                                <input type="text" pInputText placeholder="Type Section Title" size="40"
+                                                    [name]="'section-title[' + section.id + ']'"
+                                                    [(ngModel)]="section.title" class="p-inputtext-sm text-sm"
+                                                    style="padding: 0.15rem 0.5rem;" (click)="$event.stopPropagation()"
+                                                    (keydown.Space)="$event.stopPropagation()" />
+                                            </span>
+
+                                            <button *ngIf="activeSectionIndex == i" pButton pRipple type="button"
+                                                label="Upload" class="p-button-outlined p-button-sm uppercase"
+                                                style="padding: 0.05rem 0.25rem; font-size: 0.75rem;"
+                                                (click)="$event.stopPropagation(); addFile(section); explorer.click();">
+                                            </button>
+
+                                            <span class="mx-1"></span>
+
+                                            <button pButton pRipple type="button" label="Remove"
+                                                class="p-button-danger p-button-sm uppercase"
+                                                style="padding: 0.05rem 0.25rem; font-size: 0.75rem;"
+                                                (click)="$event.stopPropagation(); removeSection(section);">
+                                            </button>
+                                        </div>
+                                    </ng-template>
+                                    <ng-template pTemplate="content">
+                                        <div
+                                            class="-m-5 pl-5 pr-3 py-3 font-medium text-xs text-gray-900 whitespace-nowrap">
+                                            <div *ngIf="section.files?.length < 1; else filesEl"
+                                                class="text-gray-400 text-center">
+                                                Use the <span class="font-bold">Upload</span> button to
+                                                <span class="font-bold">upload a pdf/img/html file</span>
+                                            </div>
+                                            <ng-template #filesEl>
+                                                <div *ngFor="let file of section.files" class="flex items-center pb-1"
+                                                    [ngStyle]="{ 'padding-left': (file.depth || 0) + 'rem' }">
+                                                    <i class="pi pi-times cursor-pointer text-gray-200 hover:text-red-500 rounded w-4 text-center"
+                                                        style="font-size: 0.75rem"
+                                                        (click)="removeFile(section, file)"></i>
+
+                                                    <i class="pi pi-chevron-left cursor-pointer text-gray-200 hover:text-gray-500 rounded w-4 text-center"
+                                                        style="font-size: 0.75rem" (click)="depth(file, -1)"></i>
+                                                    <i class="pi pi-chevron-right cursor-pointer text-gray-200 hover:text-gray-500 rounded w-4 text-center"
+                                                        style="font-size: 0.75rem" (click)="depth(file, +1)"></i>
+
+                                                    <span class="mx-1"></span>
+
+                                                    <input type="text" pInputText placeholder="Type Title" size="20"
+                                                        [name]="'file-title[' + file.id + ']'" [(ngModel)]="file.title"
+                                                        class="p-inputtext-sm text-sm flex-grow"
+                                                        style="padding: 0.15rem 0.5rem;" />
+                                                </div>
+                                            </ng-template>
+                                        </div>
+                                    </ng-template>
+                                </p-accordionTab>
+                            </p-accordion>
+                        </ng-template>
+
+                        <span class="my-2"></span>
+
+                        <div class="flex items-center">
+                            <button *ngIf="id" pButton pRipple type="button" label="Remove"
+                                class="p-button-danger p-button-outlined p-button-sm uppercase"
+                                style="padding: 0.5rem 1rem;" (click)="removeCourse()">
+                            </button>
+
+                            <span class="flex-grow"></span>
+
+                            <button pButton pRipple type="submit" label="Save"
+                                class="p-button-outlined p-button-sm uppercase" style="padding: 0.5rem 1rem;"
+                                [disabled]="!form.valid">
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
