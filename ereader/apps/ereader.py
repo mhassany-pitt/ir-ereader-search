@@ -1,10 +1,20 @@
 import os
 import shutil
+import typesense
 import json
 from flask import Blueprint, request, abort, render_template
 from apps.transform import process_html, process_image, process_pdf
 from apps.utils import courses_path, course_path, section_path, file_path
 
+client = typesense.Client({
+    'nodes': [{
+        'host': os.environ.get('TYPESENSE_HOST'),
+        'port': os.environ.get('TYPESENSE_PORT'),
+        'protocol': os.environ.get('TYPESENSE_PROTOCOL'),
+    }],
+    'api_key': os.environ.get('TYPESENSE_API_KEY'),
+    'connection_timeout_seconds': int(os.environ.get('TYPESENSE_CONNECTION_TIMEOUT_SECONDS'))
+})
 
 ereader = Blueprint('ereader', __name__, template_folder='templates')
 
@@ -115,3 +125,4 @@ def remove_orphan_files(course):
         for file_id in (os.listdir(p) if os.path.isdir(p) else []):
             if file_id.split('p')[0] not in file_ids or not file_id.endswith('.html'):
                 os.remove(file_path(course, section, {'id': file_id}))
+                client.collections['pages'].documents[file_id].delete()
