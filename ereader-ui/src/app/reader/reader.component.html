@@ -23,8 +23,13 @@
                         class="search-input p-inputtext-sm" (keyup)="search()" (onSelect)="searchSelected($event)"
                         (onClear)="highlight = {}" [showClear]="true" [showEmptyMessage]="true"
                         emptyMessage="empty search results!">
-                        <ng-template let-result pTemplate="item" class="p-0">
-                            <span [innerHTML]="result.highlights[0].snippet" class="text-sm"></span>
+                        <ng-template let-result let-index="index" pTemplate="item">
+                            <div class="p-0 flex flex-col" [ngClass]="{ 'border-t border-t-gray-100': index != 0 }">
+                                <span [innerHTML]="result.highlights[0].snippet" class="text-left"></span>
+                                <span class="text-xs text-left text-gray-500">
+                                    in page {{ result.document.p_i + 1 }}
+                                </span>
+                            </div>
                         </ng-template>
                     </p-autoComplete>
                 </span>
