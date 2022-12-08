@@ -35,7 +35,8 @@ schema = {
         {'name': 'c_id', 'type': 'string'},
         {'name': 's_id', 'type': 'int64'},
         {'name': 'f_id', 'type': 'int64'},
-        {'name': 'p_num', 'type': 'int64'},
+        {'name': 'fp_i', 'type': 'int64'},
+        {'name': 'p_i', 'type': 'int64'},
         {'name': 'content', 'type': 'string'},
         {"name": "sentences", "type": "string[]"}
     ]
@@ -51,7 +52,7 @@ except Exception as e:
 # client.collections['pages'].update(schema)
 
 
-def index(course, section, file, page_num, html_content):
+def index(course, section, file, fpage_i, html_content, page_i):
     # This part of the indexing function parses the html.
     # This code is kind of ugly but it works and I have
     # more fine grained control over what is happening,
@@ -155,7 +156,8 @@ def index(course, section, file, page_num, html_content):
         'c_id': course['id'],
         's_id': section['id'],
         'f_id': file['id'],
-        'p_num': page_num,
+        'fp_i': fpage_i,  # file_page_index
+        'p_i': page_i,  # page_index
         'content': content_string,
         'sentences': split_content
     }

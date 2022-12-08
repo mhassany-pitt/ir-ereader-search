@@ -78,6 +78,8 @@ def post_course():
     # parse course object into dict
     course = json.loads(request.form.get('model'))
 
+    p_count = 0
+
     # persist course.sections.files
     for section in (course['sections'] if 'sections' in course else []):
         for file in (section['files'] if 'files' in section else []):
@@ -85,7 +87,8 @@ def post_course():
             if form_attr_name not in request.files:
                 continue
 
-            save_file(course, section, file, request.files[form_attr_name])
+            p_count += save_file(course, section, file,
+                                 request.files[form_attr_name], p_count)
 
     remove_orphan_files(course)
 
@@ -96,17 +99,17 @@ def post_course():
     return {'status': 'ok'}
 
 
-def save_file(course, section, file, uploaded_file):
+def save_file(course, section, file, uploaded_file, p_count):
     file_path = '{}/{}'.format(section_path(course, section, True), file['id'])
     file_ext = uploaded_file.filename[uploaded_file.filename.rindex('.') + 1:]
     uploaded_file.save(file_path)
 
     if file_ext == 'pdf':
-        process_pdf(course, section, file, file_path)
+        return process_pdf(course, section, file, file_path, p_count)
     elif file_ext in ['png', 'jpg', 'jpeg']:
-        process_image(course, section, file, file_path)
+        return process_image(course, section, file, file_path, p_count)
     elif file_ext == 'html':
-        process_html(course, section, file, file_path)
+        return process_html(course, section, file, file_path, p_count)
 
 
 def remove_orphan_files(course):
@@ -125,4 +128,4 @@ def remove_orphan_files(course):
         for file_id in (os.listdir(p) if os.path.isdir(p) else []):
             if file_id.split('p')[0] not in file_ids or not file_id.endswith('.html'):
                 os.remove(file_path(course, section, {'id': file_id}))
-                client.collections['pages'].documents[file_id].delete()
+                # client.collections['pages'].documents[file_id].delete()

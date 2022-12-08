@@ -109,7 +109,7 @@ export class ReaderComponent implements OnInit {
   searchSelected(result: any) {
     setTimeout(() => {
       const doc = result.document;
-      const sfp = `s${doc.s_id}f${doc.f_id}p${doc.p_num}`;
+      const sfp = `s${doc.s_id}f${doc.f_id}p${doc.fp_i}`;
 
       if (sfp in this.searchElIds) {
         const elId = this.searchElIds[sfp];
