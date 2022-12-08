@@ -128,4 +128,8 @@ def remove_orphan_files(course):
         for file_id in (os.listdir(p) if os.path.isdir(p) else []):
             if file_id.split('p')[0] not in file_ids or not file_id.endswith('.html'):
                 os.remove(file_path(course, section, {'id': file_id}))
-                # client.collections['pages'].documents[file_id].delete()
+
+                # delete orphaned typesense docs
+                # f_id = 10p0.html <-- 10 is the actual f_id
+                client.collections['pages'] \
+                    .documents.delete({'filter_by': 'f_id:' + file_id[:file_id.index('p')]})

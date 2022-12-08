@@ -49,7 +49,6 @@ try:
     client.collections.create(schema)
 except Exception as e:
     pass
-# client.collections['pages'].update(schema)
 
 
 def index(course, section, file, fpage_i, html_content, page_i):
@@ -169,6 +168,8 @@ def index(course, section, file, fpage_i, html_content, page_i):
 @search.route('/api/search', methods=['POST'])
 def do_search():
     ''' perform search '''
+    # qet the 'query' value and pass it to typesense to search
+    # only search in the specified course (c_id)
     return client.collections['pages'].documents.search({
         'q': request.json['query'],
         'query_by': 'content',
