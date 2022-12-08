@@ -1,5 +1,6 @@
+.DS_Store
 ereader/__pycache__
-ereader/utils/
 ereader/storage/
 ereader/venv/
 ereader/typesense-data/
+test-data/

@@ -56,8 +56,3 @@ $ pip freeze > venv.txt             <-- (not required) list virtual env librarie
   $ source venv/bin/activate
   $ flask --app app.py --debug run
   ```
-- run ereader-ui
-  ```
-  $ cd ereader-ui
-  $ ng serve
-  ```
