@@ -24,7 +24,7 @@ search = Blueprint('search', __name__, template_folder='templates')
 # we can index documents using the same "format".
 
 # Essentially, each document in typsense will have this
-# "ref" which will hold oru reference scheme and the content
+# "c_id,s_id,f_id,fp_i,p_i" which will hold reference and the content
 # as the html. This is what will be called to search for specific
 # content, which needs to be passsed tot he result of the search
 # function.
