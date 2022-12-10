@@ -174,5 +174,5 @@ def do_search():
         'q': request.json['query'],
         'query_by': 'content',
         'filter_by': 'c_id:' + request.json['c_id'],
-        # 'sort_by': 'num_employees:desc'
+        'sort_by': 'p_i:asc'
     })

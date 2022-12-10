@@ -113,7 +113,7 @@ export class ReaderComponent implements OnInit {
               console.log(err);
             },
           }),
-      500
+      300
     );
   }
 
